@@ -302,7 +302,7 @@ export WIFIPASS='your_pass'
 
 # Uncomment and change if you want setup scripts to be pulled
 # from a different repo than github.com/marcone/teslausb
- export REPO=marcone
+ export REPO=msaxton88
 
 # Uncomment and change if you want a different branch than main-dev
- export BRANCH=msaxton99
+ export BRANCH=main-dev
