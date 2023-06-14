@@ -63,7 +63,7 @@ function copy_script () {
       mount -t tmpfs none "$SOURCE_DIR"
       (
         cd "$SOURCE_DIR"
-        curlwrapper -L "https://github.com/msaxton99/teslausb-Lightshow/raw/main-dev/teslausb-Lightshow-main.tar.gz" | tar zxf - --strip-components=1
+        curlwrapper -L "https://github.com/msaxton99/teslausb/archive/refs/tags/main.tar.gz" | tar zxf - --strip-components=1
       )
     fi
   fi
