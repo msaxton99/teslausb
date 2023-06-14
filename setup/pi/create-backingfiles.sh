@@ -14,11 +14,12 @@ log_progress "starting"
 CAM_SIZE="$1"
 MUSIC_SIZE="$2"
 BOOMBOX_SIZE="$3"
+LIGHTSHOW_SIZE="$4"
 # strip trailing slash that shell autocomplete might have added
-BACKINGFILES_MOUNTPOINT="${4/%\//}"
-USE_EXFAT="$5"
+BACKINGFILES_MOUNTPOINT="${5/%\//}"
+USE_EXFAT="$6"
 
-log_progress "cam: $CAM_SIZE, music: $MUSIC_SIZE, boombox: $BOOMBOX_SIZE mountpoint: $BACKINGFILES_MOUNTPOINT, exfat: $USE_EXFAT"
+log_progress "cam: $CAM_SIZE, music: $MUSIC_SIZE, boombox: $BOOMBOX_SIZE, lightshow: $LIGHTSHOW_SIZE mountpoint: $BACKINGFILES_MOUNTPOINT, exfat: $USE_EXFAT"
 
 function first_partition_offset () {
   local filename="$1"
@@ -132,10 +133,10 @@ function check_for_exfat_support () {
 CAM_DISK_FILE_NAME="$BACKINGFILES_MOUNTPOINT/cam_disk.bin"
 MUSIC_DISK_FILE_NAME="$BACKINGFILES_MOUNTPOINT/music_disk.bin"
 BOOMBOX_DISK_FILE_NAME="$BACKINGFILES_MOUNTPOINT/boombox_disk.bin"
-
+LIGHTSHOW_DISK_FILE_NAME="$BACKINGFILES_MOUNTPOINT/lightshow_disk.bin"
 # delete existing files, because fallocate doesn't shrink files, and
 # because they interfere with the percentage-of-free-space calculation
-if [ -e "$CAM_DISK_FILE_NAME" ] || [ -e "$MUSIC_DISK_FILE_NAME" ] || [ -e "$BOOMBOX_DISK_FILE_NAME" ] || [ -e "$BACKINGFILES_MOUNTPOINT/snapshots" ]
+if [ -e "$CAM_DISK_FILE_NAME" ] || [ -e "$MUSIC_DISK_FILE_NAME" ] || [ -e "$BOOMBOX_DISK_FILE_NAME" ] || [ -e "$LIGHTSHOW_DISK_FILE_NAME" ] || [ -e "$BACKINGFILES_MOUNTPOINT/snapshots" ]
 then
   if [ -t 0 ]
   then
@@ -155,10 +156,12 @@ killall archiveloop || true
 umount -d /mnt/cam || true
 umount -d /mnt/music || true
 umount -d /mnt/boombox || true
+umount -d /mnt/lightshow || true
 umount -d /backingfiles/snapshots/snap*/mnt || true
 rm -f "$CAM_DISK_FILE_NAME"
 rm -f "$MUSIC_DISK_FILE_NAME"
 rm -f "$BOOMBOX_DISK_FILE_NAME"
+rm -f "$LIGHTSHOW_DISK_FILE_NAME"
 rm -rf "$BACKINGFILES_MOUNTPOINT/snapshots"
 
 # Check if kernel supports ExFAT 
@@ -195,6 +198,7 @@ fi
 CAM_DISK_SIZE="$(calc_size "$CAM_SIZE")"
 MUSIC_DISK_SIZE="$(calc_size "$MUSIC_SIZE")"
 BOOMBOX_DISK_SIZE="$(calc_size "$BOOMBOX_SIZE")"
+LIGHTSHOW_DISK_SIZE="$(calc_size "$LIGHTSHOW_SIZE")"
 
 add_drive "cam" "CAM" "$CAM_DISK_SIZE" "$CAM_DISK_FILE_NAME" "$USE_EXFAT"
 log_progress "created camera backing file"
@@ -227,4 +231,15 @@ then
   log_progress "created boombox backing file"
 fi
 
+REMAINING_SPACE="$(available_space)"
+if [ "$LIGHTSHOW_DISK_SIZE" -gt "$REMAINING_SPACE" ]
+then
+  LIGHTSHOW_DISK_SIZE="$REMAINING_SPACE"
+fi
+
+if [ "$REMAINING_SPACE" -ge 1024 ] && [ "$LIGHTSHOW_DISK_SIZE" -gt 0 ]
+then
+  add_drive "lightshow" "LIGHTSHOW" "$LIGHTSHOW_DISK_SIZE" "$LIGHTSHOW_DISK_FILE_NAME" "$USE_EXFAT"
+  log_progress "created lightshow backing file"
+fi
 log_progress "done"
