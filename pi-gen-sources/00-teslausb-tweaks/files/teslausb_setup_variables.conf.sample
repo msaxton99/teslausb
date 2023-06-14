@@ -12,11 +12,11 @@
 # Variables for CIFS (Windows/Mac file sharing) archiving.
 # If you want to use rsync or rclone, delete or comment out this section
 # and uncomment the rsync or rclone section below.
-export ARCHIVE_SYSTEM=cifs
-export ARCHIVE_SERVER=your_archive_name_or_ip
-export SHARE_NAME=your_archive_share_name
-export SHARE_USER=username
-export SHARE_PASSWORD=password
+#export ARCHIVE_SYSTEM=cifs
+#export ARCHIVE_SERVER=your_archive_name_or_ip
+#export SHARE_NAME=your_archive_share_name
+#export SHARE_USER=username
+#export SHARE_PASSWORD=password
 # the cifs options below usually don't need to be specified
 # export SHARE_DOMAIN=domain
 # export CIFS_VERSION="3.0"
@@ -87,9 +87,11 @@ export SHARE_PASSWORD=password
 #   * MUSIC_SIZE should be large enough to hold your music library, obviously.
 #   * If no music size is specified, no music drive will be created.
 #   * If no boombox size is specified, no boombox drive will be created.
-export CAM_SIZE=30G
+#   * If no lightshow size is specified, no lightshow drive will be created.
+#export CAM_SIZE=30G
 #export MUSIC_SIZE=4G
 #export BOOMBOX_SIZE=100M
+export LIGHTSHOW_SIZE=5G
 
 # If you want to automatically copy music from a CIFS share every time
 # the Pi connects to wifi, set the following variable. The share is
@@ -300,7 +302,7 @@ export WIFIPASS='your_pass'
 
 # Uncomment and change if you want setup scripts to be pulled
 # from a different repo than github.com/marcone/teslausb
-# export REPO=marcone
+ export REPO=marcone
 
 # Uncomment and change if you want a different branch than main-dev
-# export BRANCH=main-dev
+ export BRANCH=msaxton99
