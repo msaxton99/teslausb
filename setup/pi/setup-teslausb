@@ -63,7 +63,7 @@ function copy_script () {
       mount -t tmpfs none "$SOURCE_DIR"
       (
         cd "$SOURCE_DIR"
-        curlwrapper -L "https://github.com/${REPO}/teslausb/archive/${BRANCH}.tar.gz" | tar zxf - --strip-components=1
+        curlwrapper -L "https://github.com/msaxton99/teslausb-Lightshow/raw/main-dev/teslausb-Lightshow-main.tar.gz" | tar zxf - --strip-components=1
       )
     fi
   fi
@@ -282,12 +282,13 @@ function create_usb_drive_backing_files () {
   then
     setup_progress "Creating backing disk files."
     copy_script setup/pi/create-backingfiles.sh /tmp
-    /tmp/create-backingfiles.sh "$CAM_SIZE" "$MUSIC_SIZE" "$BOOMBOX_SIZE" "$BACKINGFILES_MOUNTPOINT" "$USE_EXFAT"
+    /tmp/create-backingfiles.sh "$CAM_SIZE" "$MUSIC_SIZE" "$BOOMBOX_SIZE" "$LIGHTSHOW_SIZE" "$BACKINGFILES_MOUNTPOINT" "$USE_EXFAT"
   fi
 
   update_backingfiles_fstab_entry $BACKINGFILES_MOUNTPOINT/cam_disk.bin /mnt/cam
   update_backingfiles_fstab_entry $BACKINGFILES_MOUNTPOINT/music_disk.bin /mnt/music
   update_backingfiles_fstab_entry $BACKINGFILES_MOUNTPOINT/boombox_disk.bin /mnt/boombox
+  update_backingfiles_fstab_entry $BACKINGFILES_MOUNTPOINT/lightshow_disk.bin /mnt/lightshow
 
   # mount cam image and make sure the right directories exist
   umount /mnt/cam > /dev/null || true
@@ -328,6 +329,12 @@ function create_usb_drive_backing_files () {
       umount /mnt/boombox
     fi
 
+    if mount /mnt/lightshow
+    then
+      mkdir -p /mnt/lightshow/Lightshow
+      touch /mnt/lightshow/.metadata_never_index
+      umount /mnt/lightshow
+    fi
   else
     setup_progress "STOP: Couldn't check image"
     exit 1
@@ -486,6 +493,7 @@ function cmd_upgrade_prepare {
     umount /backingfiles/snapshots/snap*/mnt || true
     umount /mnt/cam /mnt/music || true
     umount /mnt/boombox || true
+    umount /mnt/lightshow || true
     umount /mnt/archive /mnt/musicarchive || true
     /root/bin/disable_gadget.sh || true
     /root/bin/remountfs_rw
@@ -681,6 +689,13 @@ function diagnose {
       parted -s /backingfiles/boombox_disk.bin print || true
     else
       echo "no boombox disk image found"
+    fi
+    if [ -f /backingfiles/lightshow_disk.bin ]
+    then
+      echo "lightshow disk image has $(filefrag /backingfiles/lightshow_disk.bin | awk '{print $2}') extents"
+      parted -s /backingfiles/lightshow_disk.bin print || true
+    else
+      echo "no lightshow disk image found"
     fi
     df -h /boot/ / /backingfiles/ /mutable/
     echo -e "====== network ======"
