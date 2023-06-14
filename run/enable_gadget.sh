@@ -78,6 +78,16 @@ then
   mkdir -p "$gadget_root/functions/mass_storage.0/${lun}"
   echo "/backingfiles/boombox_disk.bin" > "$gadget_root/functions/mass_storage.0/${lun}/file"
   echo "TeslaUSB BOOMBOX $(du -h /backingfiles/boombox_disk.bin | awk '{print $1}')" > "$gadget_root/functions/mass_storage.0/${lun}/inquiry_string"
+  lun="lun.3"
+fi
+
+# LightShow drive is either lun 1, 2 or 3, depending on options
+if [ -e "/backingfiles/lightshow_disk.bin" ]
+then
+  mkdir -p "$gadget_root/functions/mass_storage.0/${lun}"
+  echo "/backingfiles/lightshow_disk.bin" > "$gadget_root/functions/mass_storage.0/${lun}/file"
+  echo "TeslaUSB BOOMBOX $(du -h /backingfiles/lightshow_disk.bin | awk '{print $1}')" > "$gadget_root/functions/mass_storage.0/${lun}/inquiry_string"
+  lun="lun.3"
 fi
 
 ln -sf "$gadget_root/functions/mass_storage.0" "$gadget_root/configs/$cfg.1"
