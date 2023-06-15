@@ -77,7 +77,8 @@
 #   * CAM_SIZE should generally be somewhat small, around 16G to 32G, unless you
 #     plan on accumulating a lot of footage between archive operations, in which
 #     case you should increase the value (an hour of recordings, or 6 Sentry
-#     events, is about 7-9 GB of data).
+#     events, is about 7-9 GB of data). 
+#     IF Disabled CAM will be created but not mounted
 #   * As of Tesla software version 2020.48.10, the car will warn when the
 #     recording drive is smaller than 32 GB, but smaller values will still work.
 #     Tesla appears to use power-of-ten based sizes, presumably because most
@@ -87,11 +88,11 @@
 #   * MUSIC_SIZE should be large enough to hold your music library, obviously.
 #   * If no music size is specified, no music drive will be created.
 #   * If no boombox size is specified, no boombox drive will be created.
-#   * If no lightshow size is specified, no lightshow drive will be created.
-#export CAM_SIZE=30G
+#   * If no lightshow size is specified, no lightshow drive will be created. Lightshow doesn't need much space. 
+export CAM_SIZE=DISABLED
 #export MUSIC_SIZE=4G
 #export BOOMBOX_SIZE=100M
-export LIGHTSHOW_SIZE=5G
+export LIGHTSHOW_SIZE=100M
 
 # If you want to automatically copy music from a CIFS share every time
 # the Pi connects to wifi, set the following variable. The share is
