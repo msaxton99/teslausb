@@ -59,8 +59,15 @@ fi
 # mass storage setup
 mkdir -p "$gadget_root/functions/mass_storage.0"
 
+if [ $CAM_DISABLED == 'TRUE' ]
+then
+echo "CAM ENABLED"
+else
 echo "/backingfiles/cam_disk.bin" > "$gadget_root/functions/mass_storage.0/lun.0/file"
 echo "TeslaUSB CAM $(du -h /backingfiles/cam_disk.bin | awk '{print $1}')" > "$gadget_root/functions/mass_storage.0/lun.0/inquiry_string"
+
+fi
+
 
 lun="lun.1"
 # one lun is created by default, so we only need to create the 2nd one
@@ -87,7 +94,6 @@ then
   mkdir -p "$gadget_root/functions/mass_storage.0/${lun}"
   echo "/backingfiles/lightshow_disk.bin" > "$gadget_root/functions/mass_storage.0/${lun}/file"
   echo "TeslaUSB BOOMBOX $(du -h /backingfiles/lightshow_disk.bin | awk '{print $1}')" > "$gadget_root/functions/mass_storage.0/${lun}/inquiry_string"
-  lun="lun.3"
 fi
 
 ln -sf "$gadget_root/functions/mass_storage.0" "$gadget_root/configs/$cfg.1"
